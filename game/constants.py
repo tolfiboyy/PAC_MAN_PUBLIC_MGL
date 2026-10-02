@@ -1,0 +1,7 @@
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+
+NORTH = 1
+EAST = 2
+SOUTH = 4
+WEST = 8

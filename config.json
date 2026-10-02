@@ -1,0 +1,28 @@
+# Pac-Man configuration file
+# Lines starting with '#' are ignored
+
+{
+    # Global values
+    "highscore_filename": "highscores.json",
+    "lives": 30,
+    "pacgum": 15,
+    "points_per_pacgum": 10,
+    "points_per_super_pacgum": 50,
+    "points_per_ghost": 200,
+    "seed": 1,
+    "level_max_time": 90,
+
+    # Levels: at least 10, sizes grow with progression
+    "level": [
+        {"width": 15, "height": 11},
+        {"width": 15, "height": 13},
+        {"width": 17, "height": 13},
+        {"width": 19, "height": 13},
+        {"width": 19, "height": 15},
+        {"width": 21, "height": 15},
+        {"width": 23, "height": 15},
+        {"width": 23, "height": 17},
+        {"width": 25, "height": 17},
+        {"width": 25, "height": 19}
+    ]
+}
