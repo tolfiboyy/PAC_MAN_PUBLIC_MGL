@@ -25,10 +25,16 @@ def generate_level(
 
 def setup_level(
         config: Config,
-        level_index: int,
-        player: Player,
-        now: float
-        ):
+        level_index: int
+        ) -> (
+            tuple[
+                list[list[int]],
+                int, int,
+                tuple[int, int],
+                Player, list[Ghost],
+                set[tuple[int, int]],
+                set[tuple[int, int]]]
+                ):
 
     maze = generate_level(config, level_index)
 
@@ -40,9 +46,7 @@ def setup_level(
     else:
         player_spawn = (width // 2, height // 2)
 
-    player.x, player.y = player_spawn
-    player.direction = None
-    player.requested_direction = None
+    player = Player(player_spawn[0], player_spawn[1])
 
     blinky = Ghost(0, 0, "direct")
     pinky = Ghost(width - 1, 0, "ahead")
@@ -51,9 +55,6 @@ def setup_level(
 
     ghosts = [blinky, pinky, inky, clyde]
 
-    for ghost in ghosts:
-        ghost.last_move = now
-
     pacgums, super_pacgums = create_pacgums(maze, config)
 
     return (
@@ -61,6 +62,7 @@ def setup_level(
         width,
         height,
         player_spawn,
+        player,
         ghosts,
         pacgums,
         super_pacgums

@@ -1,11 +1,12 @@
-from .constants import WHITE, BLACK
+from .constants import WHITE, BLACK, ELECTRIC
 from .entities.ghost import Ghost
+from .entities.player import Player
 import pygame
 
 
 def draw_horizontal_line(
-        screen,
-        color,
+        screen: pygame.Surface,
+        color: tuple[int, int, int],
         start_x: int,
         end_x: int,
         y: int
@@ -16,8 +17,8 @@ def draw_horizontal_line(
 
 
 def draw_vertical_line(
-        screen,
-        color,
+        screen: pygame.Surface,
+        color: tuple[int, int, int],
         start_y: int,
         end_y: int,
         x: int
@@ -28,8 +29,8 @@ def draw_vertical_line(
 
 
 def draw_circles(
-        screen,
-        color,
+        screen: pygame.Surface,
+        color: tuple[int, int, int],
         center_x: int,
         center_y: int,
         radius: int
@@ -46,9 +47,9 @@ def draw_circles(
 
 def draw_pacgums(
         pacgums: set[tuple[int, int]],
-        screen,
-        cell_size,
-        hud_height
+        screen: pygame.Surface,
+        cell_size: int,
+        hud_height: int
         ) -> None:
 
     for x, y in pacgums:
@@ -60,8 +61,8 @@ def draw_pacgums(
 
 def draw_super_pacgums(
         super_pacgums: set[tuple[int, int]],
-        screen,
-        cell_size,
+        screen: pygame.Surface,
+        cell_size: int,
         hud_height: int
         ) -> None:
 
@@ -76,8 +77,9 @@ def draw_super_pacgums(
 def draw_cell(
         x: int,
         y: int,
-        cell,
+        cell: int,
         cell_size: int,
+        color: tuple[int, int, int],
         screen: pygame.Surface,
         y_offset: int
         ) -> None:
@@ -87,19 +89,19 @@ def draw_cell(
 
     if cell & 1:
         draw_horizontal_line(
-            screen, WHITE, pixel_x, pixel_x + cell_size, pixel_y)
+            screen, color, pixel_x, pixel_x + cell_size, pixel_y)
 
     if cell & 2:
         draw_vertical_line(
-            screen, WHITE, pixel_y, pixel_y + cell_size, pixel_x + cell_size)
+            screen, color, pixel_y, pixel_y + cell_size, pixel_x + cell_size)
 
     if cell & 4:
         draw_horizontal_line(
-            screen, WHITE, pixel_x, pixel_x + cell_size, pixel_y + cell_size)
+            screen, color, pixel_x, pixel_x + cell_size, pixel_y + cell_size)
 
     if cell & 8:
         draw_vertical_line(
-            screen, WHITE, pixel_y, pixel_y + cell_size, pixel_x)
+            screen, color, pixel_y, pixel_y + cell_size, pixel_x)
 
 
 def draw_hud(
@@ -107,13 +109,13 @@ def draw_hud(
         font: pygame.font.Font,
         score: int,
         lives: int,
-        elapsed_time: int,
+        remaining_time: int,
         level: int
         ) -> None:
 
     score_surface = font.render(f"Score: {score}", True, WHITE)
     lives_surface = font.render(f"Lives: {lives}", True, WHITE)
-    time_surface = font.render(f"Time: {elapsed_time}", True, WHITE)
+    time_surface = font.render(f"Time: {remaining_time}", True, WHITE)
     level_surface = font.render(f"Level: {level}", True, WHITE)
 
     screen.blit(score_surface, (10, 10))
@@ -127,10 +129,10 @@ def draw_game(
         maze: list[list[int]],
         pacgums: set[tuple[int, int]],
         super_pacgums: set[tuple[int, int]],
-        player_position: tuple[int, int],
+        player: Player,
         ghosts: list[Ghost],
-        pacman_image: pygame.Surface,
-        ghost_images: list[pygame.Surface],
+        pacman_images: dict[str, pygame.Surface],
+        ghost_images: list[dict[str, pygame.Surface]],
         frightened_image: pygame.Surface,
         cell_size: int,
         sprite_size: int,
@@ -138,7 +140,7 @@ def draw_game(
         lives: int,
         font: pygame.font.Font,
         hud_height: int,
-        elapsed_time: int,
+        remaining_time: int,
         level: int
         ) -> None:
 
@@ -147,42 +149,50 @@ def draw_game(
     height = len(maze)
     width = len(maze[0])
 
-    player_x, player_y = player_position
-
     for y in range(height):
         for x in range(width):
             cell = maze[y][x]
-            draw_cell(x, y, cell, cell_size, screen, hud_height)
+            draw_cell(x, y, cell, cell_size, ELECTRIC, screen, hud_height)
 
     draw_pacgums(pacgums, screen, cell_size, hud_height)
     draw_super_pacgums(super_pacgums, screen, cell_size, hud_height)
 
-    player_pixel_x = (
-        player_x * cell_size
+    player_pixel_x = int(
+        player.render_x * cell_size
         + (cell_size - sprite_size) // 2
         )
-    player_pixel_y = (
-        player_y * cell_size
+    player_pixel_y = int(
+        player.render_y * cell_size
         + (cell_size - sprite_size) // 2
         + hud_height
         )
 
     #  calage bien au centre des images
 
-    for ghost, ghost_image in zip(ghosts, ghost_images):
+    for ghost, ghost_images_by_direction in zip(ghosts, ghost_images):
 
-        ghost_pixel_x = (
-            ghost.x * cell_size) + (cell_size - sprite_size) // 2
-        ghost_pixel_y = (
-            ghost.y * cell_size) + (cell_size - sprite_size) // 2 + hud_height
+        ghost_pixel_x = int((
+            ghost.render_x * cell_size)
+            + (cell_size - sprite_size) // 2)
+        ghost_pixel_y = int((
+            ghost.render_y * cell_size)
+            + (cell_size - sprite_size) // 2 + hud_height)
 
         if ghost.edible:
             screen.blit(frightened_image, (ghost_pixel_x, ghost_pixel_y))
         else:
-            screen.blit(ghost_image, (ghost_pixel_x, ghost_pixel_y))
+            direction = ghost.direction
 
-    screen.blit(pacman_image, (player_pixel_x, player_pixel_y))
+            if direction is None:
+                direction = "right"
 
-    draw_hud(screen, font, score, lives, elapsed_time, level)
+            current_ghost_image = ghost_images_by_direction[direction]
 
-    pygame.display.flip()
+            screen.blit(
+                current_ghost_image, (ghost_pixel_x, ghost_pixel_y))
+
+    current_pacman_image = pacman_images[player.facing_direction]
+
+    screen.blit(current_pacman_image, (player_pixel_x, player_pixel_y))
+
+    draw_hud(screen, font, score, lives, remaining_time, level)

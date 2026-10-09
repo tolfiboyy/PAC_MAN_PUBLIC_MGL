@@ -1,5 +1,7 @@
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+YELLOW = (255, 255, 0)
+ELECTRIC = (0, 173, 255)
 
 NORTH = 1
 EAST = 2
