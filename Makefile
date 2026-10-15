@@ -1,26 +1,48 @@
 CONFIG ?= config.json
 VENV = PacmanEnv
+PYTHON = $(VENV)/bin/python3
+PIP = $(VENV)/bin/pip
+FLAKE8 = $(VENV)/bin/flake8
+MYPY = $(VENV)/bin/mypy
+PYINSTALLER = $(VENV)/bin/pyinstaller
 
 install:
 	python3 -m venv $(VENV)
-	$(VENV)/bin/pip install -r requirements.txt
+	$(PIP) install -r requirements.txt
 
 run:
-	python3 pac-man.py $(CONFIG)
+	$(PYTHON) pac-man.py $(CONFIG)
 
 debug:
-	python3 -m pdb pac-man.py $(CONFIG)
+	$(PYTHON) -m pdb pac-man.py $(CONFIG)
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	rm -rf .mypy_cache .pytest_cache
 
 lint:
-	flake8 .
-	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	$(FLAKE8) . --exclude=PacmanEnv,build,dist,.git,__pycache__
+	$(MYPY) . \
+	--exclude '^(PacmanEnv|build|dist)' \
+	--warn-return-any \
+	--warn-unused-ignores \
+	--ignore-missing-imports \
+	--disallow-untyped-defs \
+	--check-untyped-defs \
+	--strict
 
 lint-strict:
-	flake8 .
-	mypy . --strict
+	$(FLAKE8) . --exclude=PacmanEnv,build,dist,.git,__pycache__
+	$(MYPY) . --exclude '^(PacmanEnv|build|dist)/' --strict
 
-.PHONY: install run debug clean lint lint-strict
+package:
+	$(PYINSTALLER) --clean pacman.spec
+	cp $(CONFIG) dist/pacman/
+
+clean_build:
+	rm -rf build dist
+
+clean_env:
+	rm -rf $(VENV)
+
+.PHONY: install run debug clean lint lint-strict package clean_build clean_env

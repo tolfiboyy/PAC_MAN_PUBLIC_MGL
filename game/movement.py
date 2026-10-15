@@ -8,6 +8,8 @@ def can_move(
         maze: list[list[int]]
         ) -> bool:
 
+    '''Returns true or false if the next direction is possible'''
+
     cell = maze[y][x]
 
     if direction == "up":
@@ -28,6 +30,8 @@ def move_entity(
         direction: str,
         maze: list[list[int]]
         ) -> tuple[int, int]:
+
+    '''Moves ghost, or pacman if it's possible'''
 
     if not can_move(player_x, player_y, direction, maze):
         return player_x, player_y
@@ -52,6 +56,9 @@ def get_available_directions(
         y: int,
         maze: list[list[int]]
         ) -> list[str]:
+
+    '''Gets every possible directions on a cell,
+    used by the ghosts'''
 
     directions: list[str] = []
 

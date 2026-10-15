@@ -1,11 +1,17 @@
-from config import Config
+from app.config import Config
 import random
 
 
 def create_pacgums(
         maze: list[list[int]],
-        config: Config
+        config: Config,
+        level_index: int
         ) -> tuple[set[tuple[int, int]], set[tuple[int, int]]]:
+
+    '''Creating the pacgums, randomly if the level_index is superior
+    to 1, RNG is short for "random number generator", which then
+    chooses cells to put the pacgum inside. The super pacgums are always
+    in the corner'''
 
     height = len(maze)
     width = len(maze[0])
@@ -38,7 +44,10 @@ def create_pacgums(
         len(available_cells)
     )
 
-    rng = random.Random(config.seed)
+    if level_index == 0:
+        rng = random.Random(config.seed)
+    else:
+        rng = random.Random()
 
     selected_cells = rng.sample(
         available_cells,
@@ -58,6 +67,11 @@ def eat_pacgums(
         config: Config
         ) -> tuple[int, bool]:
 
+    '''Handles player "collision" with a pacgum or
+    super pacgums. Returning a boolean, the true inside
+    the return value of a super pacgum is to activated the
+    edible state, indicating the ghosts to flee'''
+
     if player_position in pacgums:
         pacgums.remove(player_position)
         return config.points_per_pacgum, False
@@ -72,6 +86,10 @@ def is_level_complete(
         pacgums: set[tuple[int, int]],
         super_pacgums: set[tuple[int, int]]
         ) -> bool:
+
+    '''Level is completed if there is no more pacgums
+    and super pacgums, then it returns a True boolean
+    indicating that the level is finished'''
 
     if not pacgums and not super_pacgums:
         return True

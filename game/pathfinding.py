@@ -8,6 +8,8 @@ def get_direction_from_path(
         next_cell: tuple[int, int]
         ) -> str | None:
 
+    '''Returns the direction in a string, for the direction asked'''
+
     x_current, y_current = current
     x_next, y_next = next_cell
 
@@ -28,6 +30,9 @@ def get_accessible_neighbors(
         y: int,
         maze: list[list[int]]
         ) -> list[tuple[int, int]]:
+
+    '''Used by the DFS, so when on a cell, it gets every possible neighbor
+    without a wall'''
 
     accessible: list[tuple[int, int]] = []
     directions = get_available_directions(x, y, maze)
