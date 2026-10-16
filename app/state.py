@@ -96,9 +96,17 @@ class Playing(State):
         self.cheats = session.cheats
         self.show_cheats = False
 
-        self.cell_size = 60
-        self.sprite_size = 35
+        desktop_width, desktop_height = pygame.display.get_desktop_sizes()[0]
         self.hud_height: int = 50
+
+        available_width = desktop_width - 100
+        available_height = desktop_height - 100
+
+        cell_width = available_width // self.width
+        cell_height = (available_height - self.hud_height) // self.height
+
+        self.cell_size = min(60, cell_width, cell_height)
+        self.sprite_size = 35
         self.windows_size = (
             self.width * self.cell_size,
             self.height * self.cell_size + self.hud_height

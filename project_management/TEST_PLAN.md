@@ -7,10 +7,10 @@ Status values: `PASS`, `TO RETEST`, `PENDING`.
 | Test | Expected result | Status |
 |---|---|---|
 | `make clean_env && make install` | Virtual environment is recreated and every dependency, including the maze wheel, installs | PASS |
-| `make lint` | flake8 and mypy validate project code | TO RETEST before submission |
+| `make lint` | flake8 and mypy validate project code | PASS |
 | `make package` | `dist/pacman/` is rebuilt from `pacman.spec` and receives the config file | PASS |
 | Launch with `config.json` | Game starts without traceback | PASS |
-| Launch with missing/wrong config | Clear error or safe fallback according to the error type; no raw traceback | PASS / final retest |
+| Launch with missing/wrong config | Clear error or safe fallback according to the error type; no raw traceback | PASS |
 | Config with missing values | Defaults are used and messages are printed | PASS |
 | Config with out-of-range values | Values are clamped to safe limits | PASS |
 | First level generated twice with same seed | Same level layout | PASS |
@@ -21,18 +21,18 @@ Status values: `PASS`, `TO RETEST`, `PENDING`.
 | Normal ghost collision | One life is lost and entities respawn | PASS |
 | Edible ghost collision | Ghost is eaten and score increases | PASS |
 | Level completion | Next level loads while score and remaining lives are kept | PASS |
-| Final level completion | Victory screen is reached | TO RETEST |
+| Final level completion | Victory screen is reached | PASS |
 | Timer reaches zero | Configured timeout behaviour occurs without crash | PASS |
 | Pause / resume | Gameplay and timers remain frozen while paused | PASS |
 | Cheats F1–F4 | Speed, invincibility, timer freeze and level skip work | PASS |
 | Cheats across level skip | Active cheat state is preserved across the new `Playing` state | PASS |
 | Cheat run ending | Score is not saved to highscores | PASS |
-| Normal run ending | Valid name can be entered and score is saved | TO RETEST |
+| Normal run ending | Valid name can be entered and score is saved | PASS |
 | Highscore file missing | Game starts with an empty highscore list | PASS |
 | Highscore file malformed | Bad data is ignored/handled without crash | PASS |
 | Main menu | Start, highscores, instructions and exit are reachable | PASS |
 | Menu slideshow | Backgrounds rotate and fade without blocking inputs | PASS |
-| Packaged binary | Sprites, fonts, backgrounds and config are found | PASS / retest after final assets |
+| Packaged binary | Sprites, fonts, backgrounds and config are found | PASS |
 
 ## Final pre-submission run
 

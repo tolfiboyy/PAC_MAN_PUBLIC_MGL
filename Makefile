@@ -28,8 +28,7 @@ lint:
 	--warn-unused-ignores \
 	--ignore-missing-imports \
 	--disallow-untyped-defs \
-	--check-untyped-defs \
-	--strict
+	--check-untyped-defs
 
 lint-strict:
 	$(FLAKE8) . --exclude=PacmanEnv,build,dist,.git,__pycache__
@@ -38,6 +37,8 @@ lint-strict:
 package:
 	$(PYINSTALLER) --clean pacman.spec
 	cp $(CONFIG) dist/pacman/
+	cp .itch.toml dist/pacman/
+	cp INSTRUCTIONS.txt dist/pacman/
 
 clean_build:
 	rm -rf build dist

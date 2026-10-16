@@ -19,6 +19,12 @@ The game includes:
 
 The project is split between the application layer (`app/`) and the gameplay layer (`game/`).
 
+## Play the game
+
+The packaged game is available on itch.io:
+
+https://tolfiboy.itch.io/pacman-avec-bibou-et-didou
+
 ## Instructions
 
 ### Requirements
